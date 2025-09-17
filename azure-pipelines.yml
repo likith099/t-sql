@@ -7,7 +7,8 @@ trigger:
 variables:
   buildConfiguration: Release
   projectPath: src/Database/Database.sqlproj
-  dacpacPath: $(Build.SourcesDirectory)/src/Database/bin/$(buildConfiguration)/TsqlSampleDatabase.dacpac
+  dacpacName: Database.dacpac
+  artifactStagingDir: $(Build.ArtifactStagingDirectory)
 
 pool:
   vmImage: 'windows-latest'
@@ -19,10 +20,10 @@ stages:
       - job: Build
         steps:
           - task: UseDotNet@2
-            displayName: Use .NET SDK 6.x
+            displayName: Use .NET SDK 8.x
             inputs:
               packageType: 'sdk'
-              version: '6.x'
+              version: '8.x'
 
           - task: NuGetToolInstaller@1
             displayName: 'Install NuGet'
@@ -32,7 +33,14 @@ stages:
               dotnet build "$(projectPath)" -c $(buildConfiguration) --no-restore
             displayName: 'Restore and Build'
 
-          - publish: $(dacpacPath)
+          - task: CopyFiles@2
+            displayName: 'Copy DACPAC to staging'
+            inputs:
+              SourceFolder: '$(Build.SourcesDirectory)/src/Database/bin/$(buildConfiguration)'
+              Contents: '**/*.dacpac'
+              TargetFolder: '$(artifactStagingDir)'
+
+          - publish: $(artifactStagingDir)
             artifact: drop
             displayName: 'Publish DACPAC artifact'
 
@@ -60,5 +68,5 @@ stages:
                     SqlPassword: '$(sqlPassword)'
                     DeployType: 'DacpacTask'
                     DeploymentAction: 'Publish'
-                    DacpacFile: '$(Pipeline.Workspace)/drop/TsqlSampleDatabase.dacpac'
+                    DacpacFile: '$(Pipeline.Workspace)/drop/$(dacpacName)'
                     AdditionalArguments: '/p:BlockOnPossibleDataLoss=true'
