@@ -1,0 +1,29 @@
+Project update – T‑SQL database with CI/CD
+
+What I did
+> Set up a SQL Database project under `src/Database` (MSBuild.Sdk.SqlProj).
+> Added a simple table (`dbo.Sample`) and a post‑deployment script.
+> Wrote an Azure Pipelines YAML that builds a DACPAC and deploys it to Azure SQL.
+
+Current state
+> Local Git repo is initialized and committed. No remote yet (waiting on Azure DevOps repo URL).
+> The project restores and builds locally. A DACPAC is produced under `src/Database/bin/Release/**/Database.dacpac`.
+
+Key decisions/fixes
+> Upgraded the SQL project SDK to 3.2.0 and targeted .NET 8 for better support.
+> Set `SqlServerVersion` to `Sql150` to avoid a tooling parse issue.
+> Cleaned up the project file and marked the post‑deploy script correctly so it runs after schema deploys.
+> Updated the pipeline to use .NET 8 and publish the DACPAC artifact for the deploy stage.
+
+What’s left to go live
+> Create an Azure DevOps repo, add it as the remote, and push `master`.
+> In Azure DevOps, create a service connection and set these pipeline variables:
+  - `azureServiceConnection`, `sqlServerName`, `sqlDatabaseName`, `sqlUser`, `sqlPassword` (secret).>  Make sure the Azure SQL server firewall allows the agent (or enable “Allow Azure services…”).
+
+Reference files
+> Project: `src/Database/Database.sqlproj`
+> Table: `src/Database/Tables/dbo.Sample.sql`
+> Post‑deploy: `src/Database/Scripts/PostDeployment.sql`
+> Pipeline: `azure-pipelines.yml`
+> Docs/config: `README.md`, `.gitignore`, `.vscode/extensions.json`
+
