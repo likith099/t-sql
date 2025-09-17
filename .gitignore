@@ -1,0 +1,17 @@
+# Build artifacts
+bin/
+obj/
+*.dacpac
+*.dacpac.publish.xml
+*.sqlproj.user
+*.user
+*.suo
+.vs/
+
+# VS Code
+.vscode/*
+!.vscode/extensions.json
+
+# OS
+Thumbs.db
+Desktop.ini

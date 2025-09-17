@@ -1,0 +1,64 @@
+# Azure Pipelines for SQL Database Project (MSBuild.Sdk.SqlProj)
+trigger:
+  branches:
+    include:
+      - main
+
+variables:
+  buildConfiguration: Release
+  projectPath: src/Database/Database.sqlproj
+  dacpacPath: $(Build.SourcesDirectory)/src/Database/bin/$(buildConfiguration)/TsqlSampleDatabase.dacpac
+
+pool:
+  vmImage: 'windows-latest'
+
+stages:
+  - stage: Build
+    displayName: Build DACPAC
+    jobs:
+      - job: Build
+        steps:
+          - task: UseDotNet@2
+            displayName: Use .NET SDK 6.x
+            inputs:
+              packageType: 'sdk'
+              version: '6.x'
+
+          - task: NuGetToolInstaller@1
+            displayName: 'Install NuGet'
+
+          - script: |
+              dotnet restore "$(projectPath)"
+              dotnet build "$(projectPath)" -c $(buildConfiguration) --no-restore
+            displayName: 'Restore and Build'
+
+          - publish: $(dacpacPath)
+            artifact: drop
+            displayName: 'Publish DACPAC artifact'
+
+  - stage: Deploy
+    displayName: Deploy to Azure SQL
+    dependsOn: Build
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - deployment: Deploy
+        environment: 'prod'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: drop
+                - task: SqlAzureDacpacDeployment@1
+                  displayName: 'Deploy DACPAC to Azure SQL'
+                  inputs:
+                    azureSubscription: '$(azureServiceConnection)'
+                    AuthenticationType: 'servicePrincipal'
+                    ServerName: '$(sqlServerName)'
+                    DatabaseName: '$(sqlDatabaseName)'
+                    SqlUsername: '$(sqlUser)'
+                    SqlPassword: '$(sqlPassword)'
+                    DeployType: 'DacpacTask'
+                    DeploymentAction: 'Publish'
+                    DacpacFile: '$(Pipeline.Workspace)/drop/TsqlSampleDatabase.dacpac'
+                    AdditionalArguments: '/p:BlockOnPossibleDataLoss=true'

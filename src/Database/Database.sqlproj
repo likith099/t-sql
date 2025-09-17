@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="MSBuild.Sdk.SqlProj/3.0.5">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Name>TsqlSampleDatabase</Name>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider</DSP>
+    <SqlServerVersion>SqlAzureV12</SqlServerVersion>
+    <RootNamespace>TsqlSampleDatabase</RootNamespace>
+    <DefaultCollation>SQL_Latin1_General_CP1_CI_AS</DefaultCollation>
+    <ModelCollation>1033,CI</ModelCollation>
+    <IncludeCompositeObjects>true</IncludeCompositeObjects>
+    <ProjectGuid>{00000000-0000-0000-0000-000000000000}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="Properties\publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Scripts\PostDeployment.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Tables\dbo.Sample.sql" />
+  </ItemGroup>
+</Project>
