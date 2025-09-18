@@ -4,3 +4,5 @@ CREATE TABLE [dbo].[Sample]
     [Name] NVARCHAR(200) NOT NULL,
     [CreatedUtc] DATETIME2 NOT NULL CONSTRAINT [DF_Sample_CreatedUtc] DEFAULT (SYSUTCDATETIME())
 );
+
+GO

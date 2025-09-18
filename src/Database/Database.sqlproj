@@ -15,9 +15,33 @@
     <None Include="Properties\publish.xml" />
   </ItemGroup>
   <ItemGroup>
+    <SqlCmdVariable Include="SeedSampleData">
+      <DefaultValue>true</DefaultValue>
+    </SqlCmdVariable>
+  </ItemGroup>
+  <ItemGroup>
     <PostDeploy Include="Scripts\PostDeployment.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\dbo.Sample.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Tables\dbo.Customer.sql" />
+    <Build Include="Tables\dbo.Product.sql" />
+    <Build Include="Tables\dbo.Order.sql" />
+    <Build Include="Tables\dbo.OrderItem.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Constraints\dbo.Order.FK_Customer.sql" />
+    <Build Include="Constraints\dbo.OrderItem.FK_Order.sql" />
+    <Build Include="Constraints\dbo.OrderItem.FK_Product.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Indexes\dbo.Customer.IX_LastName.sql" />
+    <Build Include="Indexes\dbo.Product.IX_Name.sql" />
+    <Build Include="Indexes\dbo.Order.IX_CustomerId.sql" />
+    <Build Include="Indexes\dbo.Order.IX_OrderDateUtc.sql" />
+    <Build Include="Indexes\dbo.OrderItem.UX_Order_Product.sql" />
+    <Build Include="Indexes\dbo.OrderItem.IX_ProductId.sql" />
   </ItemGroup>
 </Project>

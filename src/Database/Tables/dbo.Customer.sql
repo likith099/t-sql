@@ -1,0 +1,8 @@
+CREATE TABLE [dbo].[Customer]
+(
+    [CustomerId] INT IDENTITY(1,1) NOT NULL CONSTRAINT [PK_Customer] PRIMARY KEY,
+    [FirstName] NVARCHAR(100) NOT NULL,
+    [LastName] NVARCHAR(100) NOT NULL,
+    [Email] NVARCHAR(256) NOT NULL CONSTRAINT [UQ_Customer_Email] UNIQUE,
+    [CreatedUtc] DATETIME2 NOT NULL CONSTRAINT [DF_Customer_CreatedUtc] DEFAULT (SYSUTCDATETIME())
+);

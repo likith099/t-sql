@@ -1,0 +1,1 @@
+CREATE INDEX [IX_Order_OrderDateUtc] ON [dbo].[Order]([OrderDateUtc]);

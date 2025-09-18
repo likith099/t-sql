@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX [UX_OrderItem_Order_Product] ON [dbo].[OrderItem]([OrderId], [ProductId]);

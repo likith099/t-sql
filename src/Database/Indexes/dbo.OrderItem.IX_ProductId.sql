@@ -1,0 +1,1 @@
+CREATE INDEX [IX_OrderItem_ProductId] ON [dbo].[OrderItem]([ProductId]);
